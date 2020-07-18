@@ -1,0 +1,83 @@
+# connect to docker hub
+- name: Log into DockerHub
+  docker_login:
+    username: "{{ var_docker_hub_login }}"
+    password: "{{ var_docker_hub_password }}"
+
+# Creact file	
+- name: Change file ownership, group and permissions
+  file:
+    path: "{{ house }}/new_folder"
+    state: directory
+    
+# Copy private keys in target    
+- name: Copy file with owner and permissions
+  copy:
+    content: "{{ var_my_private_key }}"
+    dest: "{{ house }}/.ssh/id_rsa"
+    owner: centos
+    
+# Example git checkout from Ansible Playbooks
+- git:
+    repo: "{{ var_repository_github }}"
+    dest: "{{ house }}/new_folder"
+    key_file: "{{ house }}/.ssh/id_rsa"
+    accept_hostkey: yes
+    force: yes
+    version: "{{ repository_brach }}"
+    recursive: no
+
+# Build image Dockerfile-app   
+- name: Build an image and push it to a private repo
+  docker_image:
+    build:
+      path: "{{ house }}/new_folder/Dockerfile-app"
+    name: "{{ var_docker_hub_login }}/app-image"
+    tag: "{{ repository_tag }}"
+
+# Build image Dockerfile-mysql   
+- name: Build an image and push it to a private repo
+  docker_image:
+    build:
+      path: "{{ house }}/new_folder/Dockerfile-mysql"
+    name: "{{ var_docker_hub_login }}/mysql-image"
+    tag: "{{ repository_tag }}"
+    
+# Push Dockerfile-app image it to Docker Hub 
+- name: Push an image it to a private repo
+  docker_image:
+    path: "{{ house }}/new_folder/Dockerfile-app"
+    name: "{{ var_docker_hub_login }}/app-image"
+    push: yes
+    tag: "{{ repository_tag }}" 
+
+# Push Dockerfile-mysql image it to Docker Hub 
+- name: Push an image it to a private repo
+  docker_image:
+    path: "{{ house }}/new_folder/Dockerfile-mysql"
+    name: "{{ var_docker_hub_login }}/mysql-image"
+    push: yes
+    tag: "{{ repository_tag }}" 
+
+# deploy phonebook-mysql   
+# Pour le volume les données se trouver dans le container je fait une copy du container dans data
+- name: Create a data container phonebook-mysql
+  docker_container:
+    name: phonebook-mysql
+    image: "{{ var_docker_hub_login }}/mysql-image:{{ repository_tag }}" 
+    state: started 
+
+- name: sleep for 60 seconds and continue with play
+  wait_for:
+    timeout: 60
+
+# deploy api  
+# La page se trouve dans battleboat je fait une copy dans le repetoir du container /etc/backend/static
+- name: Create a data container phonebook-app
+  docker_container:
+    name: phonebook-app
+    image: "{{var_docker_hub_login}}/app-image:{{repository_tag}}"
+    state: started
+    ports:
+     - "8181:8181"
+    restart: always

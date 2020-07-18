@@ -79,6 +79,8 @@
   docker_container:
     name: phonebook-app
     image: "{{var_docker_hub_login}}/app-image:{{ repository_tag }}"
+    depends_on:
+     - phonebook-mysql
     state: started
     ports:
      - "8181:8181"

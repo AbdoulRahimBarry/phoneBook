@@ -1,5 +1,5 @@
 - name: Deploy battlebaot app 
-  hosts: groupe_one 
+  hosts: localhost 
   gather_facts: true
   become: true
   vars_files:

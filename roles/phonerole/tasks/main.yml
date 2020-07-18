@@ -31,7 +31,8 @@
 - name: Build an image and push it to a private repo
   docker_image:
     build:
-      path: "{{ house }}/new_folder/Dockerfile-app"
+      path: "{{ house }}/new_folder"
+      Dockerfile: Dockerfile-app
     name: "{{ var_docker_hub_login }}/app-image"
     tag: "{{ repository_tag }}"
 
@@ -39,7 +40,8 @@
 - name: Build an image and push it to a private repo
   docker_image:
     build:
-      path: "{{ house }}/new_folder/Dockerfile-mysql"
+      path: "{{ house }}/new_folder"
+      Dockerfile: Dockerfile-mysql
     name: "{{ var_docker_hub_login }}/mysql-image"
     tag: "{{ repository_tag }}"
     

@@ -82,8 +82,6 @@
     depends_on:
      - phonebook-mysql
     state: started
-    depends_on:
-     - phonebook-mysql
     ports:
      - "8181:8181"
     restart: always

@@ -78,7 +78,7 @@
 - name: Create a data container phonebook-app
   docker_container:
     name: phonebook-app
-    image: "{{var_docker_hub_login}}/app-image:{{repository_tag}}"
+    image: "{{var_docker_hub_login}}/app-image:{{ repository_tag }}"
     state: started
     ports:
      - "8181:8181"

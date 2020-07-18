@@ -62,7 +62,6 @@
     tag: "{{ repository_tag }}" 
 
 # deploy phonebook-mysql   
-# Pour le volume les données se trouver dans le container je fait une copy du container dans data
 - name: Create a data container phonebook-mysql
   docker_container:
     name: phonebook-mysql
@@ -74,7 +73,6 @@
     timeout: 60
 
 # deploy api  
-# La page se trouve dans battleboat je fait une copy dans le repetoir du container /etc/backend/static
 - name: Create a data container phonebook-app
   docker_container:
     name: phonebook-app

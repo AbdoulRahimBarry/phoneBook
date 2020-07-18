@@ -82,4 +82,3 @@
     state: started
     ports:
      - "8181:8181"
-    restart: always

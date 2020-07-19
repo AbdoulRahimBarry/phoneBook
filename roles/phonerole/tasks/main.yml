@@ -61,12 +61,19 @@
     push: yes
     tag: "{{ repository_tag }}" 
 
+# creact network   
+- name: Create a network
+  docker_network:
+    name: phone_network
+
 # deploy phonebook-mysql   
 - name: Create a data container phonebook-mysql
   docker_container:
     name: phonebook-mysql
     image: "{{ var_docker_hub_login }}/mysql-image:{{ repository_tag }}" 
     state: started 
+    networks:
+      - name: phone_network
 
 - name: sleep for 60 seconds and continue with play
   wait_for:
@@ -78,6 +85,8 @@
     name: phonebook-app
     image: "{{ var_docker_hub_login }}/app-image:{{ repository_tag }}"
     state: started
+    networks:
+      - name: phone_network
     ports:
      - "8181:8181"
     restart: yes

@@ -1,4 +1,4 @@
-- name: Deploy battlebaot app 
+- name: Deploy phonebook-app 
   hosts: groupe_one 
   gather_facts: true
   become: true
